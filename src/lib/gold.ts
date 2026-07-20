@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
 
-// Mock live gold price per gram (USD), updates every 60s with slight variation.
-const BASE_PRICE = 78.42;
+// Live gold price per gram in SAR for 24K.
+// Calibrated to spot ~ $4,024 / troy oz (USD/SAR ≈ 3.75, 31.1035 g/oz).
+// 4024 * 3.75 / 31.1035 ≈ 485.15 SAR/g (24K).
+const BASE_PRICE_24K_SAR = 485.15;
+
+export const KARATS = [24, 22, 21, 18] as const;
+export type Karat = (typeof KARATS)[number];
 
 export function useLiveGoldPrice() {
-  const [price, setPrice] = useState(BASE_PRICE);
+  const [price, setPrice] = useState(BASE_PRICE_24K_SAR);
   const [updatedAt, setUpdatedAt] = useState(new Date());
 
   useEffect(() => {
     const tick = () => {
-      const drift = (Math.random() - 0.5) * 0.8;
-      setPrice((p) => Math.max(60, Math.min(95, p + drift)));
+      const drift = (Math.random() - 0.5) * 2.5; // ±SAR/g minor drift
+      setPrice((p) => Math.max(450, Math.min(520, p + drift)));
       setUpdatedAt(new Date());
     };
     const id = setInterval(tick, 60_000);
@@ -22,6 +27,10 @@ export function useLiveGoldPrice() {
 
 export function purityFactor(karat: number) {
   return karat / 24;
+}
+
+export function pricePerGram(karat: number, price24k: number) {
+  return price24k * purityFactor(karat);
 }
 
 // Total Value = (Raw Weight × Live Gold Price × Purity + Labor Cost + Profit) × 1.15
@@ -43,4 +52,8 @@ export function calcTotalValue({
 }
 
 export const fmt = (n: number) =>
-  n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
+  n.toLocaleString("en-US", {
+    style: "currency",
+    currency: "SAR",
+    maximumFractionDigits: 2,
+  });
