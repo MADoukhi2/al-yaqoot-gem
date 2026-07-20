@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { useLiveGoldPrice, calcTotalValue, fmt } from "@/lib/gold";
+import { useLiveGoldPrice, calcTotalValue, fmt, KARATS, pricePerGram } from "@/lib/gold";
 import { rawAssets, finishedItems, orders, SERVICE_STATUSES, type ServiceStatus } from "@/lib/mock-data";
 import { Coins, Package, Wrench, TrendingUp, Plus, ArrowUpRight, Clock } from "lucide-react";
 
@@ -41,6 +41,28 @@ function Dashboard() {
           <Metric icon={<Package className="h-4 w-4" />} label="Finished Stock Value" value={fmt(finishedValue)} sub="VAT-inclusive · sellable" />
           <Metric icon={<Wrench className="h-4 w-4" />} label="Active Service Jobs" value={String(serviceJobs.length)} sub="Across workshop pipeline" />
           <Metric icon={<TrendingUp className="h-4 w-4" />} label="Live Gold / g" value={fmt(price)} sub={`Updated ${updatedAt.toLocaleTimeString()}`} accent />
+        </section>
+
+        {/* Live karat prices */}
+        <section className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent to-card p-4 shadow-card">
+          <div className="mb-3 flex items-center justify-between">
+            <div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Live Gold Price · SAR / gram</div>
+              <div className="text-xs text-muted-foreground">Updated {updatedAt.toLocaleTimeString()}</div>
+            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-background/60 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" /> Live
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {KARATS.map((k) => (
+              <div key={k} className="rounded-lg border border-border bg-background/40 p-3">
+                <div className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{k}K</div>
+                <div className="mt-1 text-lg font-bold text-gradient-gold">{fmt(pricePerGram(k, price))}</div>
+                <div className="text-[10px] text-muted-foreground">per gram</div>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* Quick actions */}
