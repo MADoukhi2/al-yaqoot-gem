@@ -7,9 +7,11 @@ export function LanguageToggle() {
   const toggle = () => {
     const next = i18n.language === "ar" ? "en" : "ar";
     i18n.changeLanguage(next);
-    localStorage.setItem("lang", next);
-    document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
-    document.documentElement.lang = next;
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lang", next);
+      document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
+      document.documentElement.lang = next;
+    }
   };
 
   return (
