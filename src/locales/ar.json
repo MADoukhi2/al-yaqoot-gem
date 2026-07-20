@@ -1,0 +1,44 @@
+{
+  "appName": "الياقوت",
+  "appSubtitle": "نظام ERP السحابي",
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "inventory": "المخزون",
+    "sales": "المبيعات"
+  },
+  "liveGold": "سعر الذهب / غ",
+  "liveGoldTitle": "سعر الذهب المباشر · ريال / غرام",
+  "updated": "تحديث",
+  "live": "مباشر",
+  "perGram": "لكل غرام",
+  "metrics": {
+    "rawAssets": "قيمة المواد الخام",
+    "rawSub": "أصول في الخزنة",
+    "finishedStock": "قيمة المخزون الجاهز",
+    "finishedSub": "شامل الضريبة · قابل للبيع",
+    "serviceJobs": "طلبات الخدمة النشطة",
+    "serviceSub": "في خط إنتاج الورشة"
+  },
+  "actions": {
+    "newSalesOrder": "طلب بيع جديد",
+    "newRepairJob": "طلب إصلاح جديد"
+  },
+  "serviceSection": {
+    "title": "طلبات الخدمة النشطة",
+    "subtitle": "خط إنتاج الورشة",
+    "inProgress": "قيد التنفيذ",
+    "viewAll": "عرض الكل",
+    "colJob": "الطلب",
+    "colCustomer": "العميل",
+    "colArtisan": "الحرفي",
+    "colStatus": "الحالة"
+  },
+  "orders": {
+    "retailTitle": "طلبات التجزئة",
+    "retailSubtitle": "زيارة مباشرة وطلبات مخصصة",
+    "investTitle": "استثمار / بالجملة",
+    "investSubtitle": "على أساس الوزن، جاهز للشهادة",
+    "noPending": "لا توجد طلبات معلقة."
+  },
+  "toggleLang": "English"
+}

@@ -2,23 +2,26 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { LayoutDashboard, Boxes, ShoppingBag, Gem, Menu, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useLiveGoldPrice, fmt } from "@/lib/gold";
-
-const nav = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/inventory", label: "Inventory", icon: Boxes },
-  { to: "/sales", label: "Sales", icon: ShoppingBag },
-] as const;
+import { useTranslation } from "react-i18next";
+import { LanguageToggle } from "./LanguageToggle";
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
   const { price } = useLiveGoldPrice();
+
+  const nav = [
+    { to: "/", label: t("nav.dashboard"), icon: LayoutDashboard },
+    { to: "/inventory", label: t("nav.inventory"), icon: Boxes },
+    { to: "/sales", label: t("nav.sales"), icon: ShoppingBag },
+  ] as const;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 border-r border-border bg-card/80 backdrop-blur transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 start-0 z-40 w-64 border-e border-border bg-card/80 backdrop-blur transition-transform lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -28,10 +31,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div className="min-w-0">
             <div className="truncate text-sm font-semibold tracking-wide text-gradient-gold">
-              Al Yaqoot
+              {t("appName")}
             </div>
             <div className="truncate text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Cloud ERP
+              {t("appSubtitle")}
             </div>
           </div>
         </div>
@@ -57,7 +60,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="absolute inset-x-3 bottom-3 rounded-lg border border-border bg-secondary/60 p-3">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Live Gold / g</div>
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("liveGold")}</div>
           <div className="mt-1 font-semibold text-primary">{fmt(price)}</div>
         </div>
       </aside>
@@ -71,7 +74,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       {/* Main */}
-      <div className="lg:pl-64">
+      <div className="lg:ps-64">
         <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur sm:px-6">
           <button
             onClick={() => setOpen((v) => !v)}
@@ -82,12 +85,13 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
           <div className="min-w-0 flex-1">
             <h1 className="truncate text-lg font-semibold tracking-tight sm:text-xl">
-              <span className="text-gradient-gold">Al Yaqoot ERP</span>
+              <span className="text-gradient-gold">{t("appName")} ERP</span>
             </h1>
           </div>
+          <LanguageToggle />
           <div className="hidden items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs sm:flex">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-            <span className="text-muted-foreground">Gold</span>
+            <span className="text-muted-foreground">{t("liveGold")}</span>
             <span className="font-semibold text-primary">{fmt(price)}/g</span>
           </div>
         </header>

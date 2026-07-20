@@ -1,0 +1,44 @@
+{
+  "appName": "Al Yaqoot",
+  "appSubtitle": "Cloud ERP",
+  "nav": {
+    "dashboard": "Dashboard",
+    "inventory": "Inventory",
+    "sales": "Sales"
+  },
+  "liveGold": "Live Gold / g",
+  "liveGoldTitle": "Live Gold Price · SAR / gram",
+  "updated": "Updated",
+  "live": "Live",
+  "perGram": "per gram",
+  "metrics": {
+    "rawAssets": "Raw Assets Value",
+    "rawSub": "assets in vault",
+    "finishedStock": "Finished Stock Value",
+    "finishedSub": "VAT-inclusive · sellable",
+    "serviceJobs": "Active Service Jobs",
+    "serviceSub": "Across workshop pipeline"
+  },
+  "actions": {
+    "newSalesOrder": "New Sales Order",
+    "newRepairJob": "New Repair Job"
+  },
+  "serviceSection": {
+    "title": "Active Service Jobs",
+    "subtitle": "Workshop pipeline",
+    "inProgress": "in progress",
+    "viewAll": "View all",
+    "colJob": "Job",
+    "colCustomer": "Customer",
+    "colArtisan": "Artisan",
+    "colStatus": "Status"
+  },
+  "orders": {
+    "retailTitle": "Retail Orders",
+    "retailSubtitle": "Walk-in & custom",
+    "investTitle": "Investment / Bulk",
+    "investSubtitle": "Weight-based, certificate-ready",
+    "noPending": "No pending orders."
+  },
+  "toggleLang": "العربية"
+}
