@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { useLiveGoldPrice, calcTotalValue, fmt } from "@/lib/gold";
+import { useLiveGoldPrice, calcTotalValue, fmt, KARATS, pricePerGram } from "@/lib/gold";
 import { rawAssets, finishedItems, orders, SERVICE_STATUSES, type ServiceStatus } from "@/lib/mock-data";
 import { Coins, Package, Wrench, TrendingUp, Plus, ArrowUpRight, Clock } from "lucide-react";
 
