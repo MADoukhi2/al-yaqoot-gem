@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { useLiveGoldPrice, calcTotalValue, fmt, KARATS, pricePerGram } from "@/lib/gold";
 import { rawAssets, finishedItems, orders, SERVICE_STATUSES, type ServiceStatus } from "@/lib/mock-data";
 import { Coins, Package, Wrench, TrendingUp, Plus, ArrowUpRight, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/")({
   component: Dashboard,
@@ -18,6 +19,7 @@ const statusStyles: Record<ServiceStatus, string> = {
 };
 
 function Dashboard() {
+  const { t } = useTranslation();
   const { price, updatedAt } = useLiveGoldPrice();
 
   const rawValue = rawAssets.reduce(
@@ -35,23 +37,21 @@ function Dashboard() {
   return (
     <AppShell>
       <div className="space-y-6">
-        {/* Hero row */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <Metric icon={<Coins className="h-4 w-4" />} label="Raw Assets Value" value={fmt(rawValue)} sub={`${rawAssets.length} assets in vault`} accent />
-          <Metric icon={<Package className="h-4 w-4" />} label="Finished Stock Value" value={fmt(finishedValue)} sub="VAT-inclusive · sellable" />
-          <Metric icon={<Wrench className="h-4 w-4" />} label="Active Service Jobs" value={String(serviceJobs.length)} sub="Across workshop pipeline" />
-          <Metric icon={<TrendingUp className="h-4 w-4" />} label="Live Gold / g" value={fmt(price)} sub={`Updated ${updatedAt.toLocaleTimeString()}`} accent />
+          <Metric icon={<Coins className="h-4 w-4" />} label={t("metrics.rawAssets")} value={fmt(rawValue)} sub={`${rawAssets.length} ${t("metrics.rawSub")}`} accent />
+          <Metric icon={<Package className="h-4 w-4" />} label={t("metrics.finishedStock")} value={fmt(finishedValue)} sub={t("metrics.finishedSub")} />
+          <Metric icon={<Wrench className="h-4 w-4" />} label={t("metrics.serviceJobs")} value={String(serviceJobs.length)} sub={t("metrics.serviceSub")} />
+          <Metric icon={<TrendingUp className="h-4 w-4" />} label={t("liveGold")} value={fmt(price)} sub={`${t("updated")} ${updatedAt.toLocaleTimeString()}`} accent />
         </section>
 
-        {/* Live karat prices */}
         <section className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent to-card p-4 shadow-card">
           <div className="mb-3 flex items-center justify-between">
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Live Gold Price · SAR / gram</div>
-              <div className="text-xs text-muted-foreground">Updated {updatedAt.toLocaleTimeString()}</div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("liveGoldTitle")}</div>
+              <div className="text-xs text-muted-foreground">{t("updated")} {updatedAt.toLocaleTimeString()}</div>
             </div>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-background/60 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" /> Live
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" /> {t("live")}
             </span>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -59,37 +59,33 @@ function Dashboard() {
               <div key={k} className="rounded-lg border border-border bg-background/40 p-3">
                 <div className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{k}K</div>
                 <div className="mt-1 text-lg font-bold text-gradient-gold">{fmt(pricePerGram(k, price))}</div>
-                <div className="text-[10px] text-muted-foreground">per gram</div>
+                <div className="text-[10px] text-muted-foreground">{t("perGram")}</div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Quick actions */}
         <div className="flex flex-wrap gap-3">
           <Link to="/sales" className="inline-flex items-center gap-2 rounded-lg bg-gradient-gold px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-luxury transition-transform hover:scale-[1.02]">
-            <Plus className="h-4 w-4" /> New Sales Order
+            <Plus className="h-4 w-4" /> {t("actions.newSalesOrder")}
           </Link>
           <Link to="/inventory" className="inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-card px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-accent">
-            <Wrench className="h-4 w-4" /> New Repair Job
+            <Wrench className="h-4 w-4" /> {t("actions.newRepairJob")}
           </Link>
         </div>
 
-        {/* Two-column: service jobs + orders */}
         <section className="grid gap-6 xl:grid-cols-3">
-          {/* Service jobs */}
           <div className="rounded-xl border border-border bg-card p-5 shadow-card xl:col-span-2">
             <header className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-base font-semibold">Active Service Jobs</h2>
-                <p className="text-xs text-muted-foreground">Workshop pipeline · {serviceJobs.length} in progress</p>
+                <h2 className="text-base font-semibold">{t("serviceSection.title")}</h2>
+                <p className="text-xs text-muted-foreground">{t("serviceSection.subtitle")} · {serviceJobs.length} {t("serviceSection.inProgress")}</p>
               </div>
               <Link to="/inventory" className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
-                View all <ArrowUpRight className="h-3 w-3" />
+                {t("serviceSection.viewAll")} <ArrowUpRight className="h-3 w-3" />
               </Link>
             </header>
 
-            {/* Pipeline counts */}
             <div className="mb-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
               {SERVICE_STATUSES.map((s) => {
                 const count = serviceJobs.filter((j) => j.status === s).length;
@@ -104,26 +100,24 @@ function Dashboard() {
 
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
+                <thead className="text-xs uppercase tracking-wider text-muted-foreground">
                   <tr>
-                    <th className="pb-2 pr-4 font-medium">Job</th>
-                    <th className="pb-2 pr-4 font-medium">Customer</th>
-                    <th className="pb-2 pr-4 font-medium">Artisan</th>
-                    <th className="pb-2 font-medium">Status</th>
+                    <th className="pb-2 pe-4 text-start font-medium">{t("serviceSection.colJob")}</th>
+                    <th className="pb-2 pe-4 text-start font-medium">{t("serviceSection.colCustomer")}</th>
+                    <th className="pb-2 pe-4 text-start font-medium">{t("serviceSection.colArtisan")}</th>
+                    <th className="pb-2 text-start font-medium">{t("serviceSection.colStatus")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
                   {serviceJobs.slice(0, 6).map((j) => (
                     <tr key={j.sku}>
-                      <td className="py-3 pr-4">
+                      <td className="py-3 pe-4">
                         <div className="font-medium">{j.name}</div>
                         <div className="text-xs text-muted-foreground">{j.sku}</div>
                       </td>
-                      <td className="py-3 pr-4 text-muted-foreground">{j.customer}</td>
-                      <td className="py-3 pr-4 text-muted-foreground">{j.artisan}</td>
-                      <td className="py-3">
-                        <StatusBadge status={j.status!} />
-                      </td>
+                      <td className="py-3 pe-4 text-muted-foreground">{j.customer}</td>
+                      <td className="py-3 pe-4 text-muted-foreground">{j.artisan}</td>
+                      <td className="py-3"><StatusBadge status={j.status!} /></td>
                     </tr>
                   ))}
                 </tbody>
@@ -131,10 +125,9 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Pending orders */}
           <div className="space-y-4">
-            <PendingCard title="Retail Orders" subtitle="Walk-in & custom" items={retailPending} tone="soft" />
-            <PendingCard title="Investment / Bulk" subtitle="Weight-based, certificate-ready" items={investPending} tone="gold" />
+            <PendingCard title={t("orders.retailTitle")} subtitle={t("orders.retailSubtitle")} items={retailPending} tone="soft" />
+            <PendingCard title={t("orders.investTitle")} subtitle={t("orders.investSubtitle")} items={investPending} tone="gold" />
           </div>
         </section>
       </div>
@@ -164,6 +157,7 @@ function StatusBadge({ status }: { status: ServiceStatus }) {
 }
 
 function PendingCard({ title, subtitle, items, tone }: { title: string; subtitle: string; items: { id: string; customer: string; amount: number; weightG: number }[]; tone: "gold" | "soft" }) {
+  const { t } = useTranslation();
   return (
     <div className={`rounded-xl border p-5 shadow-card ${tone === "gold" ? "border-primary/30 bg-gradient-to-br from-accent to-card" : "border-border bg-card"}`}>
       <div className="flex items-start justify-between">
@@ -174,7 +168,7 @@ function PendingCard({ title, subtitle, items, tone }: { title: string; subtitle
         <span className="rounded-full border border-border bg-background px-2 py-0.5 text-xs font-semibold">{items.length}</span>
       </div>
       <ul className="mt-3 space-y-2">
-        {items.length === 0 && <li className="text-xs text-muted-foreground">No pending orders.</li>}
+        {items.length === 0 && <li className="text-xs text-muted-foreground">{t("orders.noPending")}</li>}
         {items.map((o) => (
           <li key={o.id} className="flex items-center justify-between rounded-lg border border-border bg-background/40 p-2.5">
             <div className="min-w-0">

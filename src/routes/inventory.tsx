@@ -4,6 +4,7 @@ import { useLiveGoldPrice, calcTotalValue, fmt, purityFactor } from "@/lib/gold"
 import { rawAssets, finishedItems, type ServiceStatus } from "@/lib/mock-data";
 import { Plus, Wrench, Pencil } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/inventory")({
   head: () => ({
@@ -25,6 +26,7 @@ const statusStyles: Record<ServiceStatus, string> = {
 };
 
 function InventoryPage() {
+  const { t } = useTranslation();
   const { price } = useLiveGoldPrice();
   const [tab, setTab] = useState<"raw" | "finished">("raw");
   const [finishedKind, setFinishedKind] = useState<"Sellable" | "Service">("Sellable");
@@ -34,30 +36,29 @@ function InventoryPage() {
       <div className="space-y-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Inventory</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Dual-state inventory with live valuation at {fmt(price)}/g gold.</p>
+            <h1 className="text-2xl font-bold tracking-tight">{t("inventory.title")}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{t("inventory.subtitle")} {fmt(price)}{t("inventory.subtitleSuffix")}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button className="inline-flex items-center gap-2 rounded-lg bg-gradient-gold px-4 py-2 text-sm font-semibold text-primary-foreground shadow-luxury">
-              <Plus className="h-4 w-4" /> Add Asset
+              <Plus className="h-4 w-4" /> {t("inventory.addAsset")}
             </button>
             <button className="inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-card px-4 py-2 text-sm font-semibold text-primary hover:bg-accent">
-              <Wrench className="h-4 w-4" /> Start Service Job
+              <Wrench className="h-4 w-4" /> {t("inventory.startService")}
             </button>
           </div>
         </div>
 
-        {/* Primary tabs */}
         <div className="inline-flex rounded-lg border border-border bg-card p-1">
-          {(["raw", "finished"] as const).map((t) => (
+          {(["raw", "finished"] as const).map((tabKey) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
+              key={tabKey}
+              onClick={() => setTab(tabKey)}
               className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                tab === t ? "bg-gradient-gold text-primary-foreground shadow-luxury" : "text-muted-foreground hover:text-foreground"
+                tab === tabKey ? "bg-gradient-gold text-primary-foreground shadow-luxury" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t === "raw" ? "Raw Assets" : "Finished Stock"}
+              {tabKey === "raw" ? t("inventory.rawAssets") : t("inventory.finishedStock")}
             </button>
           ))}
         </div>
@@ -75,7 +76,7 @@ function InventoryPage() {
                     finishedKind === k ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {k === "Sellable" ? "Sellable Stock" : "In Service"}
+                  {k === "Sellable" ? t("inventory.sellableStock") : t("inventory.inService")}
                 </button>
               ))}
             </div>
@@ -88,13 +89,20 @@ function InventoryPage() {
 }
 
 function RawTable({ price }: { price: number }) {
+  const { t } = useTranslation();
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[720px] text-sm">
-          <thead className="bg-secondary/60 text-left text-xs uppercase tracking-wider text-muted-foreground">
+          <thead className="bg-secondary/60 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
-              <Th>SKU</Th><Th>Name</Th><Th>Metal</Th><Th>Weight (g)</Th><Th>Purity</Th><Th>Current Value</Th><Th>Actions</Th>
+              <Th>{t("inventory.colSku")}</Th>
+              <Th>{t("inventory.colName")}</Th>
+              <Th>{t("inventory.colMetal")}</Th>
+              <Th>{t("inventory.colWeight")}</Th>
+              <Th>{t("inventory.colPurity")}</Th>
+              <Th>{t("inventory.colValue")}</Th>
+              <Th>{t("inventory.colActions")}</Th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -112,7 +120,7 @@ function RawTable({ price }: { price: number }) {
                   <Td className="font-semibold text-primary">{fmt(value)}</Td>
                   <Td>
                     <button className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground hover:text-foreground">
-                      <Pencil className="h-3 w-3" /> Edit
+                      <Pencil className="h-3 w-3" /> {t("inventory.edit")}
                     </button>
                   </Td>
                 </tr>
@@ -126,14 +134,22 @@ function RawTable({ price }: { price: number }) {
 }
 
 function FinishedTable({ price, kind }: { price: number; kind: "Sellable" | "Service" }) {
+  const { t } = useTranslation();
   const rows = finishedItems.filter((f) => f.kind === kind);
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[820px] text-sm">
-          <thead className="bg-secondary/60 text-left text-xs uppercase tracking-wider text-muted-foreground">
+          <thead className="bg-secondary/60 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
-              <Th>SKU</Th><Th>Name</Th><Th>Type</Th><Th>Weight (g)</Th><Th>Purity</Th><Th>Value (VAT incl.)</Th><Th>Status</Th><Th>Actions</Th>
+              <Th>{t("inventory.colSku")}</Th>
+              <Th>{t("inventory.colName")}</Th>
+              <Th>{t("inventory.colType")}</Th>
+              <Th>{t("inventory.colWeight")}</Th>
+              <Th>{t("inventory.colPurity")}</Th>
+              <Th>{t("inventory.colValueVat")}</Th>
+              <Th>{t("inventory.colStatus")}</Th>
+              <Th>{t("inventory.colActions")}</Th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -154,13 +170,13 @@ function FinishedTable({ price, kind }: { price: number; kind: "Sellable" | "Ser
                       </span>
                     ) : (
                       <span className="inline-flex rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-                        In Stock
+                        {t("inventory.inStock")}
                       </span>
                     )}
                   </Td>
                   <Td>
                     <button className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground hover:text-foreground">
-                      <Pencil className="h-3 w-3" /> Edit
+                      <Pencil className="h-3 w-3" /> {t("inventory.edit")}
                     </button>
                   </Td>
                 </tr>
@@ -174,7 +190,7 @@ function FinishedTable({ price, kind }: { price: number; kind: "Sellable" | "Ser
 }
 
 function Th({ children }: { children: React.ReactNode }) {
-  return <th className="px-4 py-3 font-medium">{children}</th>;
+  return <th className="px-4 py-3 text-start font-medium">{children}</th>;
 }
 function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <td className={`px-4 py-3 ${className}`}>{children}</td>;
