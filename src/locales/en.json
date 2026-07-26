@@ -4,7 +4,8 @@
   "nav": {
     "dashboard": "Dashboard",
     "inventory": "Inventory",
-    "sales": "Sales"
+    "sales": "Sales",
+    "customers": "Customers"
   },
   "liveGold": "Live Gold / g",
   "liveGoldTitle": "Live Gold Price · SAR / gram",
@@ -106,5 +107,29 @@
     "Polishing": "Polishing",
     "Heading to Shop": "Heading to Shop",
     "Ready": "Ready"
+  },
+  "common": {
+    "loading": "Loading…",
+    "noRows": "No records yet",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this record?",
+    "notes": "Notes",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "customers": {
+    "title": "Customers",
+    "subtitle": "Retail buyers, bullion clients and workshop customers.",
+    "add": "Add customer",
+    "edit": "Edit customer",
+    "name": "Full name",
+    "phone": "Phone",
+    "email": "Email"
+  },
+  "orderStatus": {
+    "Pending": "Pending",
+    "Paid": "Paid",
+    "Delivered": "Delivered",
+    "Cancelled": "Cancelled"
   }
 }

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Boxes, ShoppingBag, Gem, Menu, X } from "lucide-react";
+import { LayoutDashboard, Boxes, ShoppingBag, Users, Gem, Menu, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useLiveGoldPrice, fmt } from "@/lib/gold";
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     { to: "/", label: t("nav.dashboard"), icon: LayoutDashboard },
     { to: "/inventory", label: t("nav.inventory"), icon: Boxes },
     { to: "/sales", label: t("nav.sales"), icon: ShoppingBag },
+    { to: "/customers", label: t("nav.customers"), icon: Users },
   ] as const;
 
   return (
