@@ -9,9 +9,11 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+import { I18nextProvider } from "react-i18next";
+
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import "../i18n";
+import i18n, { DEFAULT_LANG } from "../i18n";
 
 function NotFoundComponent() {
   return (
@@ -116,9 +118,20 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  // Apply the saved language after hydration so SSR and first client render match.
+  useEffect(() => {
+    const saved = localStorage.getItem("lang");
+    const lang = saved === "en" || saved === "ar" ? saved : DEFAULT_LANG;
+    if (i18n.language !== lang) i18n.changeLanguage(lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  }, []);
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <Outlet />
-    </QueryClientProvider>
+    <I18nextProvider i18n={i18n}>
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
+    </I18nextProvider>
   );
 }
