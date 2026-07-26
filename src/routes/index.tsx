@@ -100,7 +100,7 @@ function Dashboard() {
                 return (
                   <div key={s} className="rounded-lg border border-border bg-secondary/40 p-2 text-center">
                     <div className="text-lg font-bold text-primary">{count}</div>
-                    <div className="mt-0.5 line-clamp-2 text-[10px] uppercase tracking-wide text-muted-foreground">{s}</div>
+                    <div className="mt-0.5 line-clamp-2 text-[10px] uppercase tracking-wide text-muted-foreground">{t(`status.${s}`)}</div>
                   </div>
                 );
               })}
@@ -157,9 +157,10 @@ function Metric({ icon, label, value, sub, accent }: { icon: React.ReactNode; la
 }
 
 function StatusBadge({ status }: { status: ServiceStatus }) {
+  const { t } = useTranslation();
   return (
     <span className={`inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusStyles[status]}`}>
-      {status}
+      {t(`status.${status}`)}
     </span>
   );
 }
