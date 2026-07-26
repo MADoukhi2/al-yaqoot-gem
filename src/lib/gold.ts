@@ -10,9 +10,12 @@ export type Karat = (typeof KARATS)[number];
 
 export function useLiveGoldPrice() {
   const [price, setPrice] = useState(BASE_PRICE_24K_SAR);
-  const [updatedAt, setUpdatedAt] = useState(new Date());
+  // null until mounted — timestamps are locale/timezone dependent and would
+  // otherwise break SSR hydration.
+  const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
 
   useEffect(() => {
+    setUpdatedAt(new Date());
     const tick = () => {
       const drift = (Math.random() - 0.5) * 2.5; // ±SAR/g minor drift
       setPrice((p) => Math.max(450, Math.min(520, p + drift)));
@@ -24,6 +27,9 @@ export function useLiveGoldPrice() {
 
   return { price, updatedAt };
 }
+
+export const fmtTime = (d: Date | null) =>
+  d ? d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—";
 
 export function purityFactor(karat: number) {
   return karat / 24;

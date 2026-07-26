@@ -98,5 +98,13 @@
     "formulaRetailSuffix": "/غ · المعادلة: (الوزن × السعر × النقاء + الأجرة + الربح) × 1.15",
     "formulaInvest": "مثبت عند ذهب",
     "formulaInvestSuffix": "/غ · المعادلة: (الوزن × السعر الفوري × النقاء + العلاوة) × 1.15"
+  },
+  "status": {
+    "Received": "تم الاستلام",
+    "Delivering to Workshop": "في الطريق للورشة",
+    "Crafting": "قيد التصنيع",
+    "Polishing": "التلميع",
+    "Heading to Shop": "في الطريق للمحل",
+    "Ready": "جاهز"
   }
 }
