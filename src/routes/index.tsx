@@ -1,11 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { useLiveGoldPrice, calcTotalValue, fmt, KARATS, pricePerGram } from "@/lib/gold";
+import { useLiveGoldPrice, calcTotalValue, fmt, fmtTime, KARATS, pricePerGram } from "@/lib/gold";
 import { rawAssets, finishedItems, orders, SERVICE_STATUSES, type ServiceStatus } from "@/lib/mock-data";
 import { Coins, Package, Wrench, TrendingUp, Plus, ArrowUpRight, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Dashboard — Al Yaqoot Cloud ERP" },
+      { name: "description", content: "Live gold valuation, service pipeline, and pending retail and investment orders in one gold-trade dashboard." },
+      { property: "og:title", content: "Dashboard — Al Yaqoot Cloud ERP" },
+      { property: "og:description", content: "Live gold valuation, service pipeline, and pending retail and investment orders." },
+    ],
+  }),
   component: Dashboard,
 });
 
@@ -41,14 +49,14 @@ function Dashboard() {
           <Metric icon={<Coins className="h-4 w-4" />} label={t("metrics.rawAssets")} value={fmt(rawValue)} sub={`${rawAssets.length} ${t("metrics.rawSub")}`} accent />
           <Metric icon={<Package className="h-4 w-4" />} label={t("metrics.finishedStock")} value={fmt(finishedValue)} sub={t("metrics.finishedSub")} />
           <Metric icon={<Wrench className="h-4 w-4" />} label={t("metrics.serviceJobs")} value={String(serviceJobs.length)} sub={t("metrics.serviceSub")} />
-          <Metric icon={<TrendingUp className="h-4 w-4" />} label={t("liveGold")} value={fmt(price)} sub={`${t("updated")} ${updatedAt.toLocaleTimeString()}`} accent />
+          <Metric icon={<TrendingUp className="h-4 w-4" />} label={t("liveGold")} value={fmt(price)} sub={`${t("updated")} ${fmtTime(updatedAt)}`} accent />
         </section>
 
         <section className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent to-card p-4 shadow-card">
           <div className="mb-3 flex items-center justify-between">
             <div>
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("liveGoldTitle")}</div>
-              <div className="text-xs text-muted-foreground">{t("updated")} {updatedAt.toLocaleTimeString()}</div>
+              <div className="text-xs text-muted-foreground">{t("updated")} {fmtTime(updatedAt)}</div>
             </div>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-background/60 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" /> {t("live")}
