@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ServiceStatus } from "@/lib/erp";
 
@@ -81,5 +81,43 @@ export function EmptyRow({ colSpan, label }: { colSpan: number; label: string })
         {label}
       </td>
     </tr>
+  );
+}
+
+export function FormFooter({
+  error,
+  pending,
+  onClose,
+}: {
+  error: string | null;
+  pending: boolean;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <>
+      {error && (
+        <p className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+          {error}
+        </p>
+      )}
+      <div className="flex justify-end gap-2">
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+        >
+          {t("common.cancel")}
+        </button>
+        <button
+          type="submit"
+          disabled={pending}
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-gold px-5 py-2 text-sm font-semibold text-primary-foreground shadow-luxury disabled:opacity-60"
+        >
+          {pending && <Loader2 className="h-4 w-4 animate-spin" />}
+          {t("common.save")}
+        </button>
+      </div>
+    </>
   );
 }

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { EmptyRow, Field, Modal, Td, Th } from "@/components/erp-ui";
-import { FormFooter } from "./inventory";
+import { EmptyRow, Field, FormFooter, Modal, Td, Th } from "@/components/erp-ui";
 import { useCustomers, useDeleteCustomer, useSaveCustomer, type Customer } from "@/lib/erp";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";

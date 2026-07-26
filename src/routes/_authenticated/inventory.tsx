@@ -17,8 +17,8 @@ import {
   type RawAsset,
   type ServiceStatus,
 } from "@/lib/erp";
-import { EmptyRow, Field, Modal, Td, Th } from "@/components/erp-ui";
-import { Plus, Wrench, Pencil, Trash2, Loader2 } from "lucide-react";
+import { EmptyRow, Field, FormFooter, Modal, Td, Th } from "@/components/erp-ui";
+import { Plus, Wrench, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -530,43 +530,5 @@ function RowActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => 
         <Trash2 className="h-3 w-3" /> {t("common.delete")}
       </button>
     </div>
-  );
-}
-
-export function FormFooter({
-  error,
-  pending,
-  onClose,
-}: {
-  error: string | null;
-  pending: boolean;
-  onClose: () => void;
-}) {
-  const { t } = useTranslation();
-  return (
-    <>
-      {error && (
-        <p className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
-          {error}
-        </p>
-      )}
-      <div className="flex justify-end gap-2">
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-        >
-          {t("common.cancel")}
-        </button>
-        <button
-          type="submit"
-          disabled={pending}
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-gold px-5 py-2 text-sm font-semibold text-primary-foreground shadow-luxury disabled:opacity-60"
-        >
-          {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-          {t("common.save")}
-        </button>
-      </div>
-    </>
   );
 }
