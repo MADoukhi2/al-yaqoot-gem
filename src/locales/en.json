@@ -98,5 +98,13 @@
     "formulaRetailSuffix": "/g · Formula: (Weight × Price × Purity + Labor + Profit) × 1.15",
     "formulaInvest": "Locked at gold",
     "formulaInvestSuffix": "/g · Formula: (Weight × Spot × Purity + Premium) × 1.15"
+  },
+  "status": {
+    "Received": "Received",
+    "Delivering to Workshop": "Delivering to Workshop",
+    "Crafting": "Crafting",
+    "Polishing": "Polishing",
+    "Heading to Shop": "Heading to Shop",
+    "Ready": "Ready"
   }
 }
