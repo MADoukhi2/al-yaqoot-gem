@@ -14,7 +14,274 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      customers: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      finished_items: {
+        Row: {
+          artisan: string | null
+          category: string
+          created_at: string
+          customer_id: string | null
+          id: string
+          karat: number
+          kind: Database["public"]["Enums"]["item_kind"]
+          labor_cost: number
+          name: string
+          profit: number
+          sku: string
+          sold: boolean
+          status: Database["public"]["Enums"]["service_status"] | null
+          updated_at: string
+          weight_g: number
+        }
+        Insert: {
+          artisan?: string | null
+          category?: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          karat?: number
+          kind?: Database["public"]["Enums"]["item_kind"]
+          labor_cost?: number
+          name: string
+          profit?: number
+          sku: string
+          sold?: boolean
+          status?: Database["public"]["Enums"]["service_status"] | null
+          updated_at?: string
+          weight_g?: number
+        }
+        Update: {
+          artisan?: string | null
+          category?: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          karat?: number
+          kind?: Database["public"]["Enums"]["item_kind"]
+          labor_cost?: number
+          name?: string
+          profit?: number
+          sku?: string
+          sold?: boolean
+          status?: Database["public"]["Enums"]["service_status"] | null
+          updated_at?: string
+          weight_g?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "finished_items_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          created_at: string
+          description: string
+          finished_item_id: string | null
+          id: string
+          karat: number
+          line_total: number
+          order_id: string
+          quantity: number
+          unit_price: number
+          weight_g: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          finished_item_id?: string | null
+          id?: string
+          karat?: number
+          line_total?: number
+          order_id: string
+          quantity?: number
+          unit_price?: number
+          weight_g?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          finished_item_id?: string | null
+          id?: string
+          karat?: number
+          line_total?: number
+          order_id?: string
+          quantity?: number
+          unit_price?: number
+          weight_g?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_finished_item_id_fkey"
+            columns: ["finished_item_id"]
+            isOneToOne: false
+            referencedRelation: "finished_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          channel: Database["public"]["Enums"]["order_channel"]
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          customer_name: string
+          gold_price: number
+          id: string
+          notes: string | null
+          order_no: string
+          status: Database["public"]["Enums"]["order_status"]
+          subtotal: number
+          total: number
+          total_weight_g: number
+          updated_at: string
+          vat: number
+        }
+        Insert: {
+          channel?: Database["public"]["Enums"]["order_channel"]
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          customer_name?: string
+          gold_price?: number
+          id?: string
+          notes?: string | null
+          order_no?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal?: number
+          total?: number
+          total_weight_g?: number
+          updated_at?: string
+          vat?: number
+        }
+        Update: {
+          channel?: Database["public"]["Enums"]["order_channel"]
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          customer_name?: string
+          gold_price?: number
+          id?: string
+          notes?: string | null
+          order_no?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal?: number
+          total?: number
+          total_weight_g?: number
+          updated_at?: string
+          vat?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          preferred_lang: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          preferred_lang?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          preferred_lang?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      raw_assets: {
+        Row: {
+          created_at: string
+          id: string
+          karat: number
+          metal: Database["public"]["Enums"]["metal_type"]
+          name: string
+          notes: string | null
+          sku: string
+          updated_at: string
+          weight_g: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          karat?: number
+          metal?: Database["public"]["Enums"]["metal_type"]
+          name: string
+          notes?: string | null
+          sku: string
+          updated_at?: string
+          weight_g?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          karat?: number
+          metal?: Database["public"]["Enums"]["metal_type"]
+          name?: string
+          notes?: string | null
+          sku?: string
+          updated_at?: string
+          weight_g?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +290,17 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      item_kind: "Sellable" | "Service"
+      metal_type: "Gold" | "Silver"
+      order_channel: "Retail" | "Investment"
+      order_status: "Pending" | "Confirmed" | "Fulfilled" | "Cancelled"
+      service_status:
+        | "Received"
+        | "Delivering to Workshop"
+        | "Crafting"
+        | "Polishing"
+        | "Heading to Shop"
+        | "Ready"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +427,19 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      item_kind: ["Sellable", "Service"],
+      metal_type: ["Gold", "Silver"],
+      order_channel: ["Retail", "Investment"],
+      order_status: ["Pending", "Confirmed", "Fulfilled", "Cancelled"],
+      service_status: [
+        "Received",
+        "Delivering to Workshop",
+        "Crafting",
+        "Polishing",
+        "Heading to Shop",
+        "Ready",
+      ],
+    },
   },
 } as const
