@@ -83,7 +83,25 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
+  body {
+    background-image:
+      radial-gradient(60rem 40rem at 85% -10%, rgba(99, 102, 241, 0.16), transparent 60%),
+      radial-gradient(50rem 34rem at 0% 0%, rgba(30, 30, 90, 0.35), transparent 65%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
 }
+
+@utility surface {
+  background: var(--gradient-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
 
 @utility text-gradient-gold {
   background: var(--gradient-gold);
