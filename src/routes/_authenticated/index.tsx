@@ -322,9 +322,7 @@ function PendingCard({
 }) {
   const { t } = useTranslation();
   return (
-    <div
-      className={`rounded-xl border p-5 shadow-card ${tone === "gold" ? "border-primary/30 bg-gradient-to-br from-accent to-card" : "border-border bg-card"}`}
-    >
+    <div className={`surface p-5 ${tone === "gold" ? "border-primary/30" : ""}`}>
       <div className="flex items-start justify-between">
         <div>
           <h3 className={`text-sm font-semibold ${tone === "gold" ? "text-primary" : ""}`}>{title}</h3>
