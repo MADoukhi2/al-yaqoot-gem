@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Boxes, ShoppingBag, Users, Gem, Menu, X } from "lucide-react";
+import { LayoutDashboard, Boxes, ShoppingBag, Users, Gem, Menu, X, TrendingUp } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useLiveGoldPrice, fmt } from "@/lib/gold";
 import { useTranslation } from "react-i18next";
@@ -22,24 +22,25 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 start-0 z-40 w-64 border-e border-border bg-card/80 backdrop-blur transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 start-0 z-40 flex w-[17rem] flex-col border-e border-border bg-card/70 backdrop-blur-xl transition-transform lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-16 items-center gap-2 border-b border-border px-5">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-gold shadow-luxury">
+        <div className="flex h-[4.5rem] items-center gap-3 px-5">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-gold shadow-luxury">
             <Gem className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="min-w-0">
-            <div className="truncate text-sm font-semibold tracking-wide text-gradient-gold">
+            <div className="truncate font-display text-sm font-semibold tracking-tight">
               {t("appName")}
             </div>
-            <div className="truncate text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <div className="truncate text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               {t("appSubtitle")}
             </div>
           </div>
         </div>
-        <nav className="flex flex-col gap-1 p-3">
+
+        <nav className="flex flex-1 flex-col gap-1.5 p-3">
           {nav.map((item) => {
             const active = pathname === item.to;
             const Icon = item.icon;
@@ -48,55 +49,62 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                className={`group relative flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition-all ${
                   active
-                    ? "bg-accent text-accent-foreground shadow-luxury"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    ? "bg-primary/12 text-foreground"
+                    : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground"
                 }`}
               >
-                <Icon className="h-4 w-4" />
+                <span
+                  className={`absolute inset-y-2 start-0 w-1 rounded-full bg-primary transition-opacity ${
+                    active ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+                <Icon className={`h-[1.05rem] w-[1.05rem] ${active ? "text-primary" : ""}`} />
                 {item.label}
               </Link>
             );
           })}
         </nav>
-        <div className="absolute inset-x-3 bottom-3 rounded-lg border border-border bg-secondary/60 p-3">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("liveGold")}</div>
-          <div className="mt-1 font-semibold text-primary">{fmt(price)}</div>
+
+        <div className="m-3 rounded-2xl border border-primary/25 bg-primary/8 p-4">
+          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+            {t("liveGold")}
+          </div>
+          <div className="mt-1.5 font-display text-lg font-bold text-foreground">{fmt(price)}</div>
+          <div className="text-[11px] text-muted-foreground">24K · g</div>
         </div>
       </aside>
 
       {/* Overlay for mobile */}
       {open && (
-        <div
-          className="fixed inset-0 z-30 bg-black/60 lg:hidden"
-          onClick={() => setOpen(false)}
-        />
+        <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setOpen(false)} />
       )}
 
       {/* Main */}
-      <div className="lg:ps-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur sm:px-6">
+      <div className="lg:ps-[17rem]">
+        <header className="sticky top-0 z-20 flex h-[4.5rem] items-center gap-3 border-b border-border/70 bg-background/70 px-4 backdrop-blur-xl sm:px-6">
           <button
             onClick={() => setOpen((v) => !v)}
-            className="grid h-9 w-9 place-items-center rounded-md border border-border text-muted-foreground hover:text-foreground lg:hidden"
+            className="grid h-10 w-10 place-items-center rounded-xl border border-border text-muted-foreground hover:text-foreground lg:hidden"
             aria-label="Toggle navigation"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-lg font-semibold tracking-tight sm:text-xl">
-              <span className="text-gradient-gold">{t("appName")} ERP</span>
+            <h1 className="truncate font-display text-lg font-semibold tracking-tight sm:text-xl">
+              {t("appName")} <span className="text-muted-foreground">ERP</span>
             </h1>
           </div>
           <LanguageToggle />
-          <div className="hidden items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs sm:flex">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+          <div className="hidden items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3.5 py-2 text-xs sm:flex">
+            <TrendingUp className="h-3.5 w-3.5 text-primary" />
             <span className="text-muted-foreground">{t("liveGold")}</span>
-            <span className="font-semibold text-primary">{fmt(price)}/g</span>
+            <span className="font-semibold text-foreground">{fmt(price)}/g</span>
           </div>
         </header>
-        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="mx-auto max-w-[95rem] p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

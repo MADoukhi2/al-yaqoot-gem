@@ -131,5 +131,18 @@
     "Paid": "Paid",
     "Delivered": "Delivered",
     "Cancelled": "Cancelled"
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signUpTitle": "Create staff account",
+    "subtitle": "Al Yaqoot Cloud ERP — staff access",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "needAccount": "Need an account? Sign up",
+    "haveAccount": "Already have an account? Sign in",
+    "checkEmail": "Check your email to confirm your account."
   }
 }
