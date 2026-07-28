@@ -1,5 +1,16 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Boxes, ShoppingBag, Users, Gem, Menu, X, TrendingUp } from "lucide-react";
+import {
+  LayoutDashboard,
+  Boxes,
+  ShoppingBag,
+  Users,
+  Gem,
+  Menu,
+  X,
+  TrendingUp,
+  ReceiptText,
+  Settings,
+} from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useLiveGoldPrice, fmt } from "@/lib/gold";
 import { useTranslation } from "react-i18next";
@@ -16,6 +27,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     { to: "/inventory", label: t("nav.inventory"), icon: Boxes },
     { to: "/sales", label: t("nav.sales"), icon: ShoppingBag },
     { to: "/customers", label: t("nav.customers"), icon: Users },
+    { to: "/invoices", label: t("nav.invoices"), icon: ReceiptText },
+    { to: "/settings", label: t("nav.settings"), icon: Settings },
   ] as const;
 
   return (
@@ -42,7 +55,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         <nav className="flex flex-1 flex-col gap-1.5 p-3">
           {nav.map((item) => {
-            const active = pathname === item.to;
+            const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
             const Icon = item.icon;
             return (
               <Link
