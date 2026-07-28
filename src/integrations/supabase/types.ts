@@ -14,8 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      company_profile: {
+        Row: {
+          address_ar: string
+          address_en: string
+          cr_number: string
+          created_at: string
+          email: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          phone: string | null
+          updated_at: string
+          vat_number: string
+        }
+        Insert: {
+          address_ar?: string
+          address_en?: string
+          cr_number?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          phone?: string | null
+          updated_at?: string
+          vat_number?: string
+        }
+        Update: {
+          address_ar?: string
+          address_en?: string
+          cr_number?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          phone?: string | null
+          updated_at?: string
+          vat_number?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
+          address: string | null
           created_at: string
           email: string | null
           id: string
@@ -23,8 +66,10 @@ export type Database = {
           notes: string | null
           phone: string | null
           updated_at: string
+          vat_number: string | null
         }
         Insert: {
+          address?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -32,8 +77,10 @@ export type Database = {
           notes?: string | null
           phone?: string | null
           updated_at?: string
+          vat_number?: string | null
         }
         Update: {
+          address?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -41,6 +88,7 @@ export type Database = {
           notes?: string | null
           phone?: string | null
           updated_at?: string
+          vat_number?: string | null
         }
         Relationships: []
       }
@@ -99,6 +147,146 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "finished_items_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_items: {
+        Row: {
+          created_at: string
+          description: string
+          discount: number
+          id: string
+          invoice_id: string
+          line_total: number
+          net_total: number
+          product_id: string | null
+          quantity: number
+          unit_price: number
+          vat_amount: number
+          vat_category: Database["public"]["Enums"]["vat_category"]
+          vat_rate: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          discount?: number
+          id?: string
+          invoice_id: string
+          line_total?: number
+          net_total?: number
+          product_id?: string | null
+          quantity?: number
+          unit_price?: number
+          vat_amount?: number
+          vat_category?: Database["public"]["Enums"]["vat_category"]
+          vat_rate?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          discount?: number
+          id?: string
+          invoice_id?: string
+          line_total?: number
+          net_total?: number
+          product_id?: string | null
+          quantity?: number
+          unit_price?: number
+          vat_amount?: number
+          vat_category?: Database["public"]["Enums"]["vat_category"]
+          vat_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          buyer_address: string | null
+          buyer_name: string
+          buyer_vat_number: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          discount_total: number
+          grand_total: number
+          id: string
+          invoice_hash: string | null
+          invoice_no: string
+          invoice_type: Database["public"]["Enums"]["invoice_type"]
+          issue_date: string
+          notes: string | null
+          previous_hash: string | null
+          qr_payload: string | null
+          status: Database["public"]["Enums"]["invoice_status"]
+          subtotal: number
+          updated_at: string
+          vat_total: number
+        }
+        Insert: {
+          buyer_address?: string | null
+          buyer_name?: string
+          buyer_vat_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          discount_total?: number
+          grand_total?: number
+          id?: string
+          invoice_hash?: string | null
+          invoice_no?: string
+          invoice_type?: Database["public"]["Enums"]["invoice_type"]
+          issue_date?: string
+          notes?: string | null
+          previous_hash?: string | null
+          qr_payload?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"]
+          subtotal?: number
+          updated_at?: string
+          vat_total?: number
+        }
+        Update: {
+          buyer_address?: string | null
+          buyer_name?: string
+          buyer_vat_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          discount_total?: number
+          grand_total?: number
+          id?: string
+          invoice_hash?: string | null
+          invoice_no?: string
+          invoice_type?: Database["public"]["Enums"]["invoice_type"]
+          issue_date?: string
+          notes?: string | null
+          previous_hash?: string | null
+          qr_payload?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"]
+          subtotal?: number
+          updated_at?: string
+          vat_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_customer_id_fkey"
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
@@ -222,6 +410,39 @@ export type Database = {
           },
         ]
       }
+      products: {
+        Row: {
+          created_at: string
+          id: string
+          name_ar: string
+          name_en: string
+          unit: string
+          unit_price: number
+          updated_at: string
+          vat_category: Database["public"]["Enums"]["vat_category"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name_ar?: string
+          name_en: string
+          unit?: string
+          unit_price?: number
+          updated_at?: string
+          vat_category?: Database["public"]["Enums"]["vat_category"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name_ar?: string
+          name_en?: string
+          unit?: string
+          unit_price?: number
+          updated_at?: string
+          vat_category?: Database["public"]["Enums"]["vat_category"]
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -290,6 +511,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      invoice_status: "Draft" | "Issued" | "Cancelled"
+      invoice_type: "Simplified" | "Standard"
       item_kind: "Sellable" | "Service"
       metal_type: "Gold" | "Silver"
       order_channel: "Retail" | "Investment"
@@ -301,6 +524,7 @@ export type Database = {
         | "Polishing"
         | "Heading to Shop"
         | "Ready"
+      vat_category: "Standard" | "Zero" | "Exempt"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -428,6 +652,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      invoice_status: ["Draft", "Issued", "Cancelled"],
+      invoice_type: ["Simplified", "Standard"],
       item_kind: ["Sellable", "Service"],
       metal_type: ["Gold", "Silver"],
       order_channel: ["Retail", "Investment"],
@@ -440,6 +666,7 @@ export const Constants = {
         "Heading to Shop",
         "Ready",
       ],
+      vat_category: ["Standard", "Zero", "Exempt"],
     },
   },
 } as const
