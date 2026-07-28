@@ -111,6 +111,15 @@ export type DraftLine = {
   vat_category: VatCategory;
 };
 
+function toLineInput(l: DraftLine) {
+  return {
+    quantity: l.quantity,
+    unitPrice: l.unit_price,
+    discount: l.discount,
+    vatCategory: l.vat_category,
+  };
+}
+
 export type NewInvoice = {
   invoice_type: "Simplified" | "Standard";
   customer_id: string | null;
@@ -137,7 +146,7 @@ export function useIssueInvoice() {
       const lines = input.lines.filter((l) => l.description.trim().length > 0);
       if (lines.length === 0) throw new Error("Add at least one line item.");
 
-      const totals = calcTotals(lines);
+      const totals = calcTotals(lines.map(toLineInput));
       const issuedAt = new Date().toISOString();
 
       // Chain from the most recent issued invoice hash (Phase 2 groundwork).
@@ -175,7 +184,7 @@ export function useIssueInvoice() {
 
       const { error: itemsError } = await supabase.from("invoice_items").insert(
         lines.map((l) => {
-          const c = calcLine(l);
+          const c = calcLine(toLineInput(l));
           return {
             invoice_id: draft.id,
             product_id: l.product_id,
