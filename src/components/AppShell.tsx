@@ -4,17 +4,51 @@ import {
   Boxes,
   ShoppingBag,
   Users,
-  Gem,
   Menu,
   X,
   TrendingUp,
   ReceiptText,
   Settings,
+  Wrench,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useLiveGoldPrice, fmt } from "@/lib/gold";
 import { useTranslation } from "react-i18next";
 import { LanguageToggle } from "./LanguageToggle";
+
+/** Silk Al-Yaqoot gem logo — navy faceted gemstone with gold accent */
+function YaqootLogo({ size = 40 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Al Yaqoot"
+    >
+      {/* Outer gem shape */}
+      <polygon
+        points="20,2 36,12 36,28 20,38 4,28 4,12"
+        fill="#0f1e3d"
+        stroke="#c9a84c"
+        strokeWidth="1.5"
+      />
+      {/* Top facets */}
+      <polygon points="20,2 36,12 20,16 4,12" fill="#1a3060" />
+      {/* Left facet */}
+      <polygon points="4,12 20,16 4,28" fill="#162a55" />
+      {/* Right facet */}
+      <polygon points="36,12 20,16 36,28" fill="#0d1e45" />
+      {/* Bottom facet */}
+      <polygon points="4,28 20,16 36,28 20,38" fill="#1a3060" />
+      {/* Centre sparkle */}
+      <polygon points="20,16 23,20 20,24 17,20" fill="#c9a84c" opacity="0.9" />
+      {/* Top glint */}
+      <line x1="20" y1="2" x2="20" y2="7" stroke="#e8c96e" strokeWidth="1" opacity="0.7" />
+    </svg>
+  );
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
@@ -40,9 +74,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         }`}
       >
         <div className="flex h-[4.5rem] items-center gap-3 px-5">
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-gold shadow-luxury">
-            <Gem className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <YaqootLogo size={40} />
           <div className="min-w-0">
             <div className="truncate font-display text-sm font-semibold tracking-tight">
               {t("appName")}
@@ -92,7 +124,10 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Overlay for mobile */}
       {open && (
-        <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setOpen(false)} />
+        <div
+          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden"
+          onClick={() => setOpen(false)}
+        />
       )}
 
       {/* Main */}
@@ -105,7 +140,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
-          <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <YaqootLogo size={28} />
             <h1 className="truncate font-display text-lg font-semibold tracking-tight sm:text-xl">
               {t("appName")} <span className="text-muted-foreground">ERP</span>
             </h1>
