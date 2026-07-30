@@ -20,6 +20,17 @@ export const Route = createFileRoute("/_authenticated/hr/employees")({
 
 const EMPLOYMENT_TYPES: EmploymentType[] = ["full-time", "part-time", "contract"];
 
+const ROLE_OPTIONS = [
+  "HR",
+  "Inventory",
+  "Sales",
+  "Cashier",
+  "Procurement",
+  "Accountant",
+  "Manager",
+  "Admin",
+] as const;
+
 function EmployeesPage() {
   const { t } = useTranslation();
   const { data, isLoading } = useEmployees();
@@ -72,10 +83,12 @@ function EmployeesPage() {
                       <Td className="font-mono text-xs text-muted-foreground">{emp.employee_no}</Td>
                       <Td className="font-medium">{emp.full_name}</Td>
                       <Td className="text-muted-foreground">{emp.department ?? "—"}</Td>
-                      <Td className="text-muted-foreground">{emp.role ?? "—"}</Td>
+                      <Td className="text-muted-foreground">
+                        {emp.role ? t(`hr.roleOptions.${emp.role}`, emp.role) : "—"}
+                      </Td>
                       <Td>
                         <span className="inline-flex rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                          {emp.employment_type ?? "—"}
+                          {emp.employment_type ? t(`hr.empType.${emp.employment_type}`, emp.employment_type) : "—"}
                         </span>
                       </Td>
                       <Td>
@@ -183,7 +196,12 @@ function EmployeeDialog({
             <input name="full_name" className="input" defaultValue={value?.full_name ?? ""} required />
           </Field>
           <Field label={t("hr.colRole")}>
-            <input name="role" className="input" defaultValue={value?.role ?? ""} />
+            <select name="role" className="input" defaultValue={value?.role ?? ""}>
+              <option value="">—</option>
+              {ROLE_OPTIONS.map((r) => (
+                <option key={r} value={r}>{t(`hr.roleOptions.${r}`, r)}</option>
+              ))}
+            </select>
           </Field>
           <Field label={t("hr.colDepartment")}>
             <input name="department" className="input" defaultValue={value?.department ?? ""} />
@@ -191,7 +209,7 @@ function EmployeeDialog({
           <Field label={t("hr.colType")}>
             <select name="employment_type" className="input" defaultValue={value?.employment_type ?? "full-time"}>
               {EMPLOYMENT_TYPES.map((et) => (
-                <option key={et} value={et}>{t(`hr.empType_${et}`)}</option>
+                <option key={et} value={et}>{t(`hr.empType.${et}`, et)}</option>
               ))}
             </select>
           </Field>
@@ -255,7 +273,7 @@ function EmployeeDialog({
 
         {/* GOSI preview */}
         <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">{t("hr.gosiPreview")}: </span>
+          <span className="font-semibold text-foreground">{t("hr.gosiPreview")} </span>
           {t("hr.gosiEmployee")}: <span className="font-semibold text-foreground">{gosi.employee.toLocaleString()} SAR</span>
           {" · "}
           {t("hr.gosiEmployer")}: <span className="font-semibold text-foreground">{gosi.employer.toLocaleString()} SAR</span>
