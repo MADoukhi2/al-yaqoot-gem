@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Gem, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -23,6 +23,32 @@ export const Route = createFileRoute("/auth")({
   }),
   component: AuthPage,
 });
+
+function YaqootLogo({ size = 44 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Al Yaqoot"
+    >
+      <polygon
+        points="20,2 36,12 36,28 20,38 4,28 4,12"
+        fill="#0f1e3d"
+        stroke="#c9a84c"
+        strokeWidth="1.5"
+      />
+      <polygon points="20,2 36,12 20,16 4,12" fill="#1a3060" />
+      <polygon points="4,12 20,16 4,28" fill="#162a55" />
+      <polygon points="36,12 20,16 36,28" fill="#0d1e45" />
+      <polygon points="4,28 20,16 36,28 20,38" fill="#1a3060" />
+      <polygon points="20,16 23,20 20,24 17,20" fill="#c9a84c" opacity="0.9" />
+      <line x1="20" y1="2" x2="20" y2="7" stroke="#e8c96e" strokeWidth="1" opacity="0.7" />
+    </svg>
+  );
+}
 
 function AuthPage() {
   const { t } = useTranslation();
@@ -79,9 +105,7 @@ function AuthPage() {
       <div className="w-full max-w-md">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-lg bg-gradient-gold shadow-luxury">
-              <Gem className="h-6 w-6 text-primary-foreground" />
-            </div>
+            <YaqootLogo size={44} />
             <div>
               <div className="text-lg font-semibold text-gradient-gold">{t("appName")}</div>
               <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
