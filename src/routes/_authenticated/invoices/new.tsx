@@ -9,6 +9,7 @@ import {
   type DraftLine,
 } from "@/lib/invoicing";
 import { calcLine, calcTotals, money, isValidVatNumber, type VatCategory } from "@/lib/zatca";
+import { useLiveGoldPrice, purityFactor } from "@/lib/gold";
 import { Loader2, Plus, Trash2, UserPlus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -20,12 +21,12 @@ export const Route = createFileRoute("/_authenticated/invoices/new")({
       {
         name: "description",
         content:
-          "Create a ZATCA-compliant tax invoice: pick a client, add line items with per-line discounts and live 15% VAT calculation.",
+          "Create a ZATCA-compliant jewelry tax invoice: pick metal, karat and weight — unit price auto-calculates from live gold price.",
       },
       { property: "og:title", content: "New Tax Invoice — ZATCA e-invoicing" },
       {
         property: "og:description",
-        content: "Dynamic invoice generator with real-time VAT and grand total calculation.",
+        content: "Dynamic jewelry invoice generator with real-time VAT and grand total calculation.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -34,6 +35,18 @@ export const Route = createFileRoute("/_authenticated/invoices/new")({
   component: NewInvoicePage,
 });
 
+/* ---------- karat options ---------- */
+const KARAT_OPTIONS = [
+  { value: 24, purity: 1.0,   labelKey: "inv.k24" },
+  { value: 22, purity: 0.916, labelKey: "inv.k22" },
+  { value: 21, purity: 0.875, labelKey: "inv.k21" },
+  { value: 18, purity: 0.75,  labelKey: "inv.k18" },
+  { value: 14, purity: 0.585, labelKey: "inv.k14" },
+  { value: 9,  purity: 0.375, labelKey: "inv.k9"  },
+] as const;
+
+type Metal = "Gold" | "Silver" | "Platinum" | "Other";
+
 const emptyLine = (): DraftLine => ({
   product_id: null,
   description: "",
@@ -41,6 +54,10 @@ const emptyLine = (): DraftLine => ({
   unit_price: 0,
   discount: 0,
   vat_category: "Standard",
+  metal: "Gold",
+  karat: 21,
+  weight_g: 0,
+  making_charge: 0,
 });
 
 function toLineInput(l: DraftLine) {
@@ -52,12 +69,20 @@ function toLineInput(l: DraftLine) {
   };
 }
 
+/** Auto-compute unit price from live gold rate, karat purity, weight, and making charge */
+function autoUnitPrice(goldPrice: number, karat: number, weightG: number, makingCharge: number): number {
+  const purity = KARAT_OPTIONS.find((k) => k.value === karat)?.purity ?? 0.875;
+  const metalValue = goldPrice * purity * weightG;
+  return Math.round((metalValue + makingCharge) * 100) / 100;
+}
+
 function NewInvoicePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: company } = useCompanyProfile();
   const { data: customers } = useCustomers();
   const { data: products } = useProducts();
+  const { price: goldPrice } = useLiveGoldPrice();
   const issue = useIssueInvoice();
 
   const [invoiceType, setInvoiceType] = useState<"Simplified" | "Standard">("Simplified");
@@ -83,7 +108,25 @@ function NewInvoicePage() {
   }
 
   function patch(index: number, changes: Partial<DraftLine>) {
-    setLines((prev) => prev.map((l, i) => (i === index ? { ...l, ...changes } : l)));
+    setLines((prev) =>
+      prev.map((l, i) => {
+        if (i !== index) return l;
+        const updated = { ...l, ...changes };
+        // Re-compute unit price automatically when metal/karat/weight/making_charge change
+        if (
+          updated.metal === "Gold" &&
+          ("metal" in changes || "karat" in changes || "weight_g" in changes || "making_charge" in changes)
+        ) {
+          updated.unit_price = autoUnitPrice(
+            goldPrice,
+            updated.karat ?? 21,
+            updated.weight_g ?? 0,
+            updated.making_charge ?? 0,
+          );
+        }
+        return updated;
+      }),
+    );
   }
 
   function applyProduct(index: number, productId: string) {
@@ -219,7 +262,7 @@ function NewInvoicePage() {
               </div>
             </section>
 
-            {/* Lines */}
+            {/* Line items */}
             <section className="rounded-2xl border border-border bg-card p-5 shadow-card">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -234,46 +277,101 @@ function NewInvoicePage() {
                 </button>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {lines.map((line, i) => {
                   const c = calcLine(toLineInput(line));
+                  const isGold = line.metal === "Gold";
                   return (
                     <div
                       key={i}
-                      className="grid gap-3 rounded-xl border border-border/70 bg-secondary/30 p-3 sm:grid-cols-12"
+                      className="rounded-xl border border-border/70 bg-secondary/30 p-4 space-y-3"
                     >
-                      <div className="sm:col-span-12">
-                        <div className="flex gap-2">
+                      {/* Row 1: product picker + description + delete */}
+                      <div className="flex gap-2">
+                        <select
+                          className="input max-w-[11rem]"
+                          value={line.product_id ?? ""}
+                          onChange={(e) => applyProduct(i, e.target.value)}
+                        >
+                          <option value="">{t("inv.customItem")}</option>
+                          {products?.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.name_en || p.name_ar}
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          className="input flex-1"
+                          placeholder={t("inv.description")}
+                          value={line.description}
+                          onChange={(e) => patch(i, { description: e.target.value })}
+                          maxLength={200}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setLines((p) => p.filter((_, idx) => idx !== i))}
+                          className="grid h-[2.65rem] w-11 shrink-0 place-items-center rounded-lg border border-border text-muted-foreground hover:text-destructive"
+                          aria-label={t("common.delete")}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+
+                      {/* Row 2: Jewelry fields — metal / karat / weight / making charge */}
+                      <div className="grid gap-3 sm:grid-cols-4">
+                        <Field label={t("inv.metal")}>
                           <select
-                            className="input max-w-[12rem]"
-                            value={line.product_id ?? ""}
-                            onChange={(e) => applyProduct(i, e.target.value)}
+                            className="input"
+                            value={line.metal ?? "Gold"}
+                            onChange={(e) => patch(i, { metal: e.target.value as Metal })}
                           >
-                            <option value="">{t("inv.customItem")}</option>
-                            {products?.map((p) => (
-                              <option key={p.id} value={p.id}>
-                                {p.name_en || p.name_ar}
+                            <option value="Gold">{t("inv.goldAuto")}</option>
+                            <option value="Silver">{t("inv.silverAuto")}</option>
+                            <option value="Platinum">{t("inv.platinum")}</option>
+                            <option value="Other">{t("inv.other")}</option>
+                          </select>
+                        </Field>
+
+                        <Field label={t("inv.karat")}>
+                          <select
+                            className="input"
+                            value={line.karat ?? 21}
+                            onChange={(e) => patch(i, { karat: Number(e.target.value) })}
+                            disabled={!isGold}
+                          >
+                            {KARAT_OPTIONS.map((k) => (
+                              <option key={k.value} value={k.value}>
+                                {t(k.labelKey)}
                               </option>
                             ))}
                           </select>
+                        </Field>
+
+                        <Field label={t("inv.weightG")}>
                           <input
+                            type="number"
+                            min={0}
+                            step="0.001"
                             className="input"
-                            placeholder={t("inv.description")}
-                            value={line.description}
-                            onChange={(e) => patch(i, { description: e.target.value })}
-                            maxLength={200}
+                            value={line.weight_g ?? 0}
+                            onChange={(e) => patch(i, { weight_g: Number(e.target.value) })}
                           />
-                          <button
-                            type="button"
-                            onClick={() => setLines((p) => p.filter((_, idx) => idx !== i))}
-                            className="grid h-[2.65rem] w-11 shrink-0 place-items-center rounded-lg border border-border text-muted-foreground hover:text-destructive"
-                            aria-label={t("common.delete")}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
+                        </Field>
+
+                        <Field label={t("inv.makingCharge")}>
+                          <input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            className="input"
+                            value={line.making_charge ?? 0}
+                            onChange={(e) => patch(i, { making_charge: Number(e.target.value) })}
+                          />
+                        </Field>
                       </div>
-                      <div className="sm:col-span-2">
+
+                      {/* Row 3: Qty / Unit price (auto) / Discount / VAT / Line total */}
+                      <div className="grid gap-3 sm:grid-cols-5">
                         <Field label={t("inv.qty")}>
                           <input
                             type="number"
@@ -284,20 +382,22 @@ function NewInvoicePage() {
                             onChange={(e) => patch(i, { quantity: Number(e.target.value) })}
                           />
                         </Field>
-                      </div>
-                      <div className="sm:col-span-3">
-                        <Field label={t("inv.unitPrice")}>
-                          <input
-                            type="number"
-                            min={0}
-                            step="0.01"
-                            className="input"
-                            value={line.unit_price}
-                            onChange={(e) => patch(i, { unit_price: Number(e.target.value) })}
-                          />
-                        </Field>
-                      </div>
-                      <div className="sm:col-span-2">
+
+                        <div className="sm:col-span-2">
+                          <Field label={isGold ? t("inv.unitPriceAuto") : t("inv.unitPrice")}>
+                            <input
+                              type="number"
+                              min={0}
+                              step="0.01"
+                              className={`input ${
+                                isGold ? "border-primary/40 bg-primary/5 font-semibold" : ""
+                              }`}
+                              value={line.unit_price}
+                              onChange={(e) => patch(i, { unit_price: Number(e.target.value) })}
+                            />
+                          </Field>
+                        </div>
+
                         <Field label={t("inv.discount")}>
                           <input
                             type="number"
@@ -308,8 +408,7 @@ function NewInvoicePage() {
                             onChange={(e) => patch(i, { discount: Number(e.target.value) })}
                           />
                         </Field>
-                      </div>
-                      <div className="sm:col-span-3">
+
                         <Field label={t("inv.vatCategory")}>
                           <select
                             className="input"
@@ -324,12 +423,13 @@ function NewInvoicePage() {
                           </select>
                         </Field>
                       </div>
-                      <div className="sm:col-span-2">
-                        <Field label={t("inv.lineTotal")}>
-                          <div className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm font-semibold tabular-nums">
-                            {money(c.total)}
-                          </div>
-                        </Field>
+
+                      {/* Line total display */}
+                      <div className="flex items-center justify-end gap-2">
+                        <span className="text-xs text-muted-foreground">{t("inv.lineTotal")}</span>
+                        <span className="rounded-lg border border-primary/30 bg-primary/5 px-4 py-1.5 text-sm font-bold tabular-nums text-primary">
+                          {money(c.total)} SAR
+                        </span>
                       </div>
                     </div>
                   );
