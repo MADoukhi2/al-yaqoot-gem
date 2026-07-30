@@ -9,6 +9,7 @@ import {
   TrendingUp,
   ReceiptText,
   Settings,
+  UserCog,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useLiveGoldPrice, fmt } from "@/lib/gold";
@@ -28,6 +29,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     { to: "/sales", label: t("nav.sales"), icon: ShoppingBag },
     { to: "/customers", label: t("nav.customers"), icon: Users },
     { to: "/invoices", label: t("nav.invoices"), icon: ReceiptText },
+    { to: "/hr", label: t("nav.hr"), icon: UserCog },
     { to: "/settings", label: t("nav.settings"), icon: Settings },
   ] as const;
 
