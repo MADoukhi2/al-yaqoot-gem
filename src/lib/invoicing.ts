@@ -102,6 +102,12 @@ export function useInvoice(id: string) {
   });
 }
 
+/**
+ * DraftLine — one editable row in the new-invoice form.
+ * Jewelry-specific fields (metal, karat, weight_g, making_charge) are stored
+ * for display on the printed invoice but do NOT alter the VAT/total calculation,
+ * which follows standard ZATCA line arithmetic (qty × unitPrice − discount + VAT).
+ */
 export type DraftLine = {
   product_id: string | null;
   description: string;
@@ -109,6 +115,14 @@ export type DraftLine = {
   unit_price: number;
   discount: number;
   vat_category: VatCategory;
+  /** Jewelry metadata */
+  metal?: "Gold" | "Silver" | "Platinum" | "Other";
+  /** Karat (24 | 22 | 21 | 18 | 14 | 9) — relevant when metal = 'Gold' */
+  karat?: number;
+  /** Gross weight in grams */
+  weight_g?: number;
+  /** Making / labour charge in SAR — included in unit_price when auto-computed */
+  making_charge?: number;
 };
 
 function toLineInput(l: DraftLine) {
@@ -197,6 +211,11 @@ export function useIssueInvoice() {
             net_total: c.net,
             vat_amount: c.vat,
             line_total: c.total,
+            // Jewelry metadata columns (nullable — ignored if not present in schema)
+            ...(l.metal        != null ? { metal: l.metal }               : {}),
+            ...(l.karat        != null ? { karat: l.karat }               : {}),
+            ...(l.weight_g     != null ? { weight_g: l.weight_g }         : {}),
+            ...(l.making_charge != null ? { making_charge: l.making_charge } : {}),
           };
         }),
       );
@@ -223,27 +242,14 @@ export function useIssueInvoice() {
         previousHash,
       );
 
-      // Sealing the invoice: after this update the row becomes immutable.
-      const issued = unwrap(
+      return unwrap(
         await supabase
           .from("invoices")
           .update({ status: "Issued", qr_payload: qrPayload, invoice_hash: invoiceHash })
           .eq("id", draft.id)
-          .select()
+          .select("*, invoice_items(*)")
           .single(),
-      );
-      return issued;
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ik.invoices }),
-  });
-}
-
-export function useCancelInvoice() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("invoices").update({ status: "Cancelled" }).eq("id", id);
-      if (error) throw new Error(error.message);
+      ) as InvoiceWithItems;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ik.invoices }),
   });
