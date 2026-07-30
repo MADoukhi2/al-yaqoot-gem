@@ -7,7 +7,8 @@
     "sales": "Sales",
     "customers": "Customers",
     "invoices": "E-Invoices",
-    "settings": "Settings"
+    "settings": "Settings",
+    "hr": "HR"
   },
   "liveGold": "Live Gold / g",
   "liveGoldTitle": "Live Gold Price · SAR / gram",
@@ -249,5 +250,44 @@
     "catalogue": "Products & services",
     "addProduct": "Add product",
     "editProduct": "Edit product"
+  },
+  "hr": {
+    "title": "Human Resources",
+    "employees": "Employees",
+    "employeesSubtitle": "Manage employee profiles, salaries, and compliance dates.",
+    "addEmployee": "Add Employee",
+    "editEmployee": "Edit Employee",
+    "colEmployeeNo": "Employee No",
+    "colName": "Name",
+    "colDepartment": "Department",
+    "colRole": "Role",
+    "colType": "Type",
+    "colIqamaExpiry": "Iqama Expiry",
+    "colSalary": "Salary",
+    "fullName": "Full Name",
+    "employeeNo": "Employee No",
+    "department": "Department",
+    "role": "Role",
+    "employmentType": "Employment Type",
+    "hireDate": "Hire Date",
+    "phone": "Phone",
+    "email": "Email",
+    "iqamaNumber": "Iqama Number",
+    "iqamaExpiry": "Iqama Expiry",
+    "passportNumber": "Passport Number",
+    "passportExpiry": "Passport Expiry",
+    "contractEnd": "Contract End",
+    "probationEnd": "Probation End",
+    "baseSalary": "Base Salary",
+    "housingAllowance": "Housing Allowance",
+    "transportAllowance": "Transport Allowance",
+    "foodAllowance": "Food Allowance",
+    "emergencyContactName": "Emergency Contact Name",
+    "emergencyContactPhone": "Emergency Contact Phone",
+    "employmentTypeOptions": {
+      "full-time": "Full-time",
+      "part-time": "Part-time",
+      "contract": "Contract"
+    }
   }
 }

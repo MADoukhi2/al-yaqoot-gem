@@ -7,7 +7,8 @@
     "sales": "المبيعات",
     "customers": "العملاء",
     "invoices": "الفواتير الإلكترونية",
-    "settings": "الإعدادات"
+    "settings": "الإعدادات",
+    "hr": "الموارد البشرية"
   },
   "liveGold": "سعر الذهب / غ",
   "liveGoldTitle": "سعر الذهب المباشر · ريال / غرام",
@@ -129,7 +130,7 @@
   },
   "customers": {
     "title": "العملاء",
-    "subtitle": "عملاء التجزئة ومشتروو السبائك وعملاء الورشة.",
+    "subtitle": "عملاء التجزئة ومشترو السبائك وعملاء الورشة.",
     "add": "إضافة عميل",
     "edit": "تعديل عميل",
     "name": "الاسم الكامل",
@@ -249,5 +250,44 @@
     "catalogue": "المنتجات والخدمات",
     "addProduct": "إضافة منتج",
     "editProduct": "تعديل المنتج"
+  },
+  "hr": {
+    "title": "الموارد البشرية",
+    "employees": "الموظفون",
+    "employeesSubtitle": "إدارة ملفات الموظفين والرواتب وتواريخ الامتثال.",
+    "addEmployee": "إضافة موظف",
+    "editEmployee": "تعديل موظف",
+    "colEmployeeNo": "رقم الموظف",
+    "colName": "الاسم",
+    "colDepartment": "القسم",
+    "colRole": "الوظيفة",
+    "colType": "النوع",
+    "colIqamaExpiry": "انتهاء الإقامة",
+    "colSalary": "الراتب",
+    "fullName": "الاسم الكامل",
+    "employeeNo": "رقم الموظف",
+    "department": "القسم",
+    "role": "الوظيفة",
+    "employmentType": "نوع التوظيف",
+    "hireDate": "تاريخ التعيين",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "iqamaNumber": "رقم الإقامة",
+    "iqamaExpiry": "انتهاء الإقامة",
+    "passportNumber": "رقم الجواز",
+    "passportExpiry": "انتهاء الجواز",
+    "contractEnd": "انتهاء العقد",
+    "probationEnd": "انتهاء التجربة",
+    "baseSalary": "الراتب الأساسي",
+    "housingAllowance": "بدل السكن",
+    "transportAllowance": "بدل النقل",
+    "foodAllowance": "بدل الطعام",
+    "emergencyContactName": "اسم جهة الاتصال للطوارئ",
+    "emergencyContactPhone": "هاتف الطوارئ",
+    "employmentTypeOptions": {
+      "full-time": "دوام كامل",
+      "part-time": "دوام جزئي",
+      "contract": "عقد"
+    }
   }
 }
