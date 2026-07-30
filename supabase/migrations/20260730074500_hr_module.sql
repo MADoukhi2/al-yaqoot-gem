@@ -1,5 +1,5 @@
 -- HR Module for al-yaqoot-gem
--- Run: supabase db reset --local
+-- Safe to re-run: uses IF NOT EXISTS for tables, drops policies before recreating
 
 -- Employees
 create table if not exists employees (
@@ -81,39 +81,30 @@ create table if not exists performance_reviews (
   manager_notes text
 );
 
--- RLS Policies (basic security - adjust as needed)
+-- RLS
 alter table employees enable row level security;
 alter table attendance enable row level security;
 alter table leave_requests enable row level security;
 alter table payroll_months enable row level security;
 alter table performance_reviews enable row level security;
 
+-- Drop policies if they exist, then recreate (safe re-run)
+drop policy if exists "Allow authenticated users full access to employees" on employees;
 create policy "Allow authenticated users full access to employees"
-  on employees for all
-  to authenticated
-  using (true)
-  with check (true);
+  on employees for all to authenticated using (true) with check (true);
 
+drop policy if exists "Allow authenticated users full access to attendance" on attendance;
 create policy "Allow authenticated users full access to attendance"
-  on attendance for all
-  to authenticated
-  using (true)
-  with check (true);
+  on attendance for all to authenticated using (true) with check (true);
 
+drop policy if exists "Allow authenticated users full access to leave_requests" on leave_requests;
 create policy "Allow authenticated users full access to leave_requests"
-  on leave_requests for all
-  to authenticated
-  using (true)
-  with check (true);
+  on leave_requests for all to authenticated using (true) with check (true);
 
+drop policy if exists "Allow authenticated users full access to payroll_months" on payroll_months;
 create policy "Allow authenticated users full access to payroll_months"
-  on payroll_months for all
-  to authenticated
-  using (true)
-  with check (true);
+  on payroll_months for all to authenticated using (true) with check (true);
 
+drop policy if exists "Allow authenticated users full access to performance_reviews" on performance_reviews;
 create policy "Allow authenticated users full access to performance_reviews"
-  on performance_reviews for all
-  to authenticated
-  using (true)
-  with check (true);
+  on performance_reviews for all to authenticated using (true) with check (true);
