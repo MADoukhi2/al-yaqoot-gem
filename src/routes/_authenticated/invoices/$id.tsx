@@ -42,14 +42,18 @@ function InvoiceViewPage() {
     );
   }
 
-  const title =
-    invoice.invoice_type === "Standard"
-      ? "Tax Invoice / فاتورة ضريبية"
-      : "Simplified Tax Invoice / فاتورة ضريبية مبسطة";
+  const isSimplified = invoice.invoice_type === "Simplified";
+
+  const title = isSimplified
+    ? "Simplified Tax Invoice / فاتورة ضريبية مبسطة"
+    : "Tax Invoice / فاتورة ضريبية";
 
   const hasJewelryData = invoice.invoice_items.some(
     (it) => (it as any).karat || (it as any).weight_g,
   );
+
+  /** Making charge column is shown only on Standard (B2B) invoices */
+  const showMaking = hasJewelryData && !isSimplified;
 
   return (
     <AppShell>
@@ -112,7 +116,7 @@ function InvoiceViewPage() {
             <div className="sm:text-end">
               <p className="mb-1 font-semibold uppercase tracking-wide">Type / النوع</p>
               <p className="text-sm">
-                {invoice.invoice_type === "Standard" ? "B2B Standard" : "B2C Simplified"}
+                {isSimplified ? "B2C Simplified" : "B2B Standard"}
               </p>
               <p className="text-neutral-600">Status: {invoice.status}</p>
             </div>
@@ -127,7 +131,9 @@ function InvoiceViewPage() {
                   <>
                     <th className="py-2 text-end">{t("inv.colKarat")}</th>
                     <th className="py-2 text-end">{t("inv.colWeight")}</th>
-                    <th className="py-2 text-end">{t("inv.colMaking")}</th>
+                    {showMaking && (
+                      <th className="py-2 text-end">{t("inv.colMaking")}</th>
+                    )}
                   </>
                 )}
                 <th className="py-2 text-end">Qty</th>
@@ -155,9 +161,11 @@ function InvoiceViewPage() {
                         <td className="py-2 text-end tabular-nums">
                           {it.weight_g != null ? `${Number(it.weight_g).toFixed(3)} g` : "—"}
                         </td>
-                        <td className="py-2 text-end tabular-nums">
-                          {it.making_charge != null ? money(Number(it.making_charge)) : "—"}
-                        </td>
+                        {showMaking && (
+                          <td className="py-2 text-end tabular-nums">
+                            {it.making_charge != null ? money(Number(it.making_charge)) : "—"}
+                          </td>
+                        )}
                       </>
                     )}
                     <td className="py-2 text-end tabular-nums">{Number(it.quantity)}</td>
